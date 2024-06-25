@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   }
   strcpy(filename, argv[1]);
 
-  file = fopen("Ordini.txt", "r");
+  file = fopen(filename, "r");
 
   // Popoliamo l'array con tutti i campi del file
   while (!feof(file))

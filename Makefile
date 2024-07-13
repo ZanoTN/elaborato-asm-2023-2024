@@ -8,12 +8,14 @@ LD = gcc
 ASM_FLAGS = -f elf64
 LD_FLAGS = -no-pie
 
-# Source files
+# Source directory
 SRC_DIR = src_2
-SOURCES = $(SRC_DIR)/main.asm $(SRC_DIR)/menu.asm $(SRC_DIR)/algorithm.asm $(SRC_DIR)/penalty.asm $(SRC_DIR)/utility.asm
 
-# Object files
-OBJECTS = $(SRC_DIR)/main.o $(SRC_DIR)/menu.o $(SRC_DIR)/algorithm.o $(SRC_DIR)/penalty.o $(SRC_DIR)/utility.o
+# Source files (list all assembly source files)
+SOURCES = $(wildcard $(SRC_DIR)/*.asm)
+
+# Object files (derived from source files)
+OBJECTS = $(SOURCES:.asm=.o)
 
 # Output executable
 OUTPUT = program

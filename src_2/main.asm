@@ -1,11 +1,14 @@
 section .data
-    filename db 15 dup(0)    ; Space for filename
-    prodotti db 10*16 dup(0) ; Space for 10 prodotto structs
-    fmt_error db "Nome file non specificato", 10, 0
+    filename        db 15                                                       ; Space for filename, 15 bytes
+                    db 0                                                        ; Null terminator
+    prodotti        times 160 db 0                                              ; Space for 10 prodotto structs (each 16 bytes), initialized to 0
+    fmt_error       db "Nome file non specificato", 10, 0                       ; Error message string, newline (10), null terminator (0)
+    fmt_menu        db "Selezione un tipo di algoritmo: (-1 per uscire): ", 0   ; Menu prompt string
+    fmt_read        db "%d,%d,%d,%d", 0                                         ; Format string for reading integers
 
 section .bss
-    file resq 1              ; File handle
-    input_utente resb 4      ; Space for user input
+    file            resq 1          ; File handle
+    input_utente    resb 4          ; Space for user input
 
 section .text
     extern fopen, fclose, printf, scanf, read_file, menu

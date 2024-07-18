@@ -2,16 +2,12 @@ section .data
 
     fd:
         .int 0      # File descriptor
-
     argc:
         .int 0      # per salvare il numero di argomenti
-
     numero_elementi: 
         .int 0
-
     testo_errore:
         .ascii "Ops! Qualcosa non ha funzionato\n\n"
-    
     testo_errore_lunghezza:
         .long .- testo_errore
 

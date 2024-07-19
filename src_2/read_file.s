@@ -1,15 +1,27 @@
 .section .data
-    fd:
-        .int 0                          # File descriptor
-    testo_errore:
-        .ascii "Ops! Qualcosa non ha funzionato nella lettura del file\n\n"
-    testo_errore_lunghezza:
-        .long .- testo_errore
+    fd: .int 0                          # File descriptor
+    testo_errore: .ascii "Ops! Qualcosa non ha funzionato nella lettura del file\n\n"
+    testo_errore_lunghezza: .long .- testo_errore
+    numero_elementi: .int 0
+    value: .int 0
+    value_section: .int 0
+
+    carattere_nuova_linea: .ascii "\n"
+    cr: .ascii "\r"
+    carattere_virgola: .ascii ","
+    buffer: .string ""       # Spazio per il buffer di input (salvo l'input temporaneamente)
+    
+    EOR: .int 1
+
+    
+
+
+
 
 .section .text
     .global read_file
 
-.type read_file @function
+    .type read_file @function
 
 read_file:
     popl %esi                           # salvo l'indirizzo della prox istruzione in ESI
@@ -27,21 +39,21 @@ read_loop:
     int $0x80               # interruzione del kernel
 
     cmpl $0, %eax           # controlla se errore
-    jl Endread
+    jl end_read
 
     cmpl $0, %eax           # controlla se EOF
     je push_last_value      # Se EOF inserisce ultimo valore
 
     # Controlla se ho una nuova linea
     movb buffer, %al        # copia il carattere dal buffer ad AL
-    cmpb new_line_char, %al # confronta AL con il carattere "\n"  
+    cmpb carattere_nuova_linea, %al # confronta AL con il carattere "\n"  
     je check_value
     
-    cmpb comma_char, %al         # confronta AL con il carattere "," 
+    cmpb carattere_virgola, %al         # confronta AL con il carattere "," 
     je check_value          # se è una "," salto per controllare se il valore in value rispetta i parametri richiesti
 
     cmpb cr, %al            # confronta AL con il carattere "\r"        in windows a fine di ogni riga /r/n, in Unix-like solo /n
-    je readLoop             # se è a fine linea salto per incrementare il numero del prodotti
+    je read_loop             # se è a fine linea salto per incrementare il numero del prodotti
 
     movb %al, %bl           # trasferisci cifra ascii da AL in BL per poter usare imul
     xorl %eax, %eax         # azzera registro EAX
@@ -71,53 +83,74 @@ check_value:
     cmpl $3, value_section  # Colonna 4
     je check_more_or_equal_one
 
-    jmp Error               # Non una colonna valida
+    jmp errore               # Non una colonna valida
 
 
 check_value_max:
     incl value_section
     cmpl $0, value_section
-    je check_ID_max
+    je check_less_or_equal_max_ID
 
     cmpl $1, value_section
-    je check_durata_max
+    je check_less_or_equal_max_durata
 
     cmpl $2, value_section
-    je check_scadenza_max
+    je check_less_or_equal_max_scadenza
     
     cmpl $3, value_section
-    je check_priorita_max
+    je check_less_or_equal_max_priorità
 
 
 check_more_or_equal_one:
     cmpl $1, value
-    jge check_max 
+    jge check_value_max 
 
 
 check_less_or_equal_max_ID:
     cmpl $127, value        # incrementa contatore della riga
     incl value_section      # Vedere se è possibile metterla nel in "check_value"
     jle add_value
-    jmp error
+    jmp errore
 
 check_less_or_equal_max_durata:
     cmpl $10, value        # incrementa contatore della riga
     incl value_section      # Vedere se è possibile metterla nel in "check_value"
     jle add_value
-    jmp error
+    jmp errore
 
 check_less_or_equal_max_scadenza:
     incl value_section
     cmpl $100, value
     jle add_value
-    jmp error
+    jmp errore
 
 check_less_or_equal_max_priorità:
     movl $0, value_section  # azzera il contatore della riga
     cmpl $5, value
     jle add_value
-    jmp error
+    jmp errore
 
+add_value:
+    xorl %eax, %eax         # azzera il registro EAX         
+    movl value, %eax        # copia il valore convertito in eax              
+    pushl %eax              # inserisci il valore nello stack               
+    movl $0, value          # resetta il valore temporaneo                    
+    incl numero_elementi          # incrementa il numero di elementi inseriti nello stack
+    
+    cmpl $0, EOR            # check se sono a fine file 
+    je end_read              # TODO: Da creare
+
+    jmp read_loop            # altrimenti ritorna al ciclo di lettura 
+
+push_last_value:
+    movl $0, EOR            # fine file quindi abbassa il flag EOF 
+    jmp check_value        # check ultimo valore
+
+end_read:
+    movb numero_elementi, %al
+    pushl %esi              # ESP punta all'indirizzo della prox istruzione
+
+    ret
 
 
 errore: 
@@ -128,4 +161,4 @@ errore:
     int $0x80                           # interruzione del kernel
 
     # TODO: implementare un controllo che faccia chiudere il file dal main, tipo una variabile di controllo
-
+esci: ret

@@ -35,7 +35,8 @@ for_primo_livello:
     movl $4, scandenza_attuale
     movl $20, scandenza_prossima        # 4 + 16
 
-    movl indice, indice_secondo_livello
+    movl indice, %ebx
+    movl %ebx, indice_secondo_livello
     decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
 
 for_secondo_livello:
@@ -47,7 +48,7 @@ for_secondo_livello:
 
 if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
     movl scandenza_attuale, %eax
-    movl scandenza_prossima. %ebx
+    movl scandenza_prossima, %ebx
 
     movl (%esp, %eax), %ecx         # valore scadenza attuale
     movl (%esp, %ebx), %edx         # valore scadenza prossima
@@ -65,7 +66,7 @@ if_primo_fine:
     incl indice_secondo_livello
     # addl $16, S                 # per puntare alla priorita prodotto successivo (piu in alto nello stack)
     addl $16, scandenza_prossima
-    jmp for_interno
+    jmp for_primo_livello
 
 
 
@@ -84,10 +85,9 @@ check_priorita:
 
 
 scambia_valori: 
-    # sottraggo prima di 4 S e Ssucc per poter puntare a Priorita e poi scalo
-    movl S, %eax
+    movl scandenza_attuale, %eax
     subl $4, %eax
-    movl Ssucc, %ebx
+    movl scandenza_prossima, %ebx
     subl $4, %ebx
 
     # Scambia priorità
@@ -120,7 +120,7 @@ scambia_valori:
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
 
-    jmp for_interno
+    jmp for_primo_livello
 
 
 fine_for_primo_livello:

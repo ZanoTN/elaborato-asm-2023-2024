@@ -68,7 +68,7 @@ for:
     movl $1, %ebx
     leal carattere_nuova_linea, %ecx
     movl $1, %edx
-    int $0x80	
+    int $0x80
 
     # Incrementiamo la durata
     movl ID_attuale, %eax

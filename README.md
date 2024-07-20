@@ -1,0 +1,1 @@
+make && ./bin/pianificatore ./ordini/ordini_1.txt

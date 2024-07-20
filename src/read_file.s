@@ -13,14 +13,8 @@
     
     EOR: .int 1
 
-    
-
-
-
-
 .section .text
     .global read_file
-
     .type read_file @function
 
 read_file:
@@ -38,11 +32,11 @@ read_loop:
     movl $1, %edx           # Lunghezza massima
     int $0x80               # interruzione del kernel
 
-    cmpl $0, %eax           # controlla se errore
-    jl end_read
-
     cmpl $0, %eax           # controlla se EOF
     je push_last_value      # Se EOF inserisce ultimo valore
+
+    cmpl $0, %eax           # controlla se errore
+    jl end_read
 
     # Controlla se ho una nuova linea
     movb buffer, %al        # copia il carattere dal buffer ad AL

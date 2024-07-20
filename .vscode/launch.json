@@ -7,7 +7,7 @@
       "request": "launch",
       "args": [],
       "cwd": "/Users/riccardozanotelli/Repo/elabrotato-asm-2023-2024",
-      "program": "/Users/riccardozanotelli/Repo/elabrotato-asm-2023-2024/build/Debug/outDebug"
+      "program": "/Users/riccardozanotelli/Repo/elabrotato-asm-2023-2024/bin/pianificatore"
     }
   ]
 }

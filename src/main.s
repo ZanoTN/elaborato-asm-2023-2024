@@ -7,7 +7,7 @@
     testo_errore: .ascii "Ops! Qualcosa non ha funzionato\n\n"
     testo_errore_lunghezza: .long .- testo_errore
     
-    testo_menu: .ascii "Seleziona l'algoritmo da utilizzare (EDF: 1, HPF: 2, esci: 0): "
+    testo_menu: .ascii "Seleziona l'algoritmo da utilizzare (EDF: 1, HPF: 2, esci: q): "
     testo_menu_lunghezza: .long .- testo_menu
 
     testo_selezione_non_valida: .ascii "Selezione non valida\n"
@@ -17,7 +17,7 @@
 
     carattere_selettore_algoritmo_EDF: .ascii "1"
     carattere_selettore_algoritmo_HPF: .ascii "2"
-    carattere_selettore_esci: .ascii "0"
+    carattere_selettore_esci: .ascii "q"
 
     input_utente: .ascii "0"
 
@@ -26,15 +26,16 @@
 
 _start:
     popl %esi
-    movl argc, %esi
 
-    cmpl $2, %esi             # Controllo se ci sono due argomenti nel argv ("main", "[nome file]")
+    movl %esi, argc
+
+    cmpb $2, argc           # Controllo se ci sono due argomenti nel argv ("main", "[nome file]")
     jne errore
 
     popl %esi               # Togliamo il primo elemento, cioè il nome del programma ("main")
 
     popl %esi
-    cmpl $0, %esi           # Confronto se esiste un valore (nome del file)
+    testl %esi, %esi	    # controlla se ESI e' 0 (NULL)
     jz errore
 
     # Apriamo il file

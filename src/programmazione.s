@@ -10,9 +10,9 @@
     carattere_nuova_linea: .ascii "\n"
     carattere_due_punti: .ascii ":"
 
-    testo_conclusione: .ascii "Conclusione:  "
+    testo_conclusione: .ascii "Conclusione: "
     testo_conclusione_len: .long .-testo_conclusione
-    testo_penalita: .ascii "Penalty:  "
+    testo_penalita: .ascii "Penalty: "
     testo_penalita_len: .long .-testo_penalita
     
 

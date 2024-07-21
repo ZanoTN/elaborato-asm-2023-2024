@@ -7,7 +7,7 @@
     testo_errore: .ascii "Ops! Qualcosa non ha funzionato\n\n"
     testo_errore_lunghezza: .long .- testo_errore
     
-    testo_menu: .ascii "Seleziona l'algoritmo da utilizzare (EDF: 1, HPF: 2, esci: q): "
+    testo_menu: .ascii "\nSeleziona l'algoritmo da utilizzare (EDF: 1, HPF: 2, esci: q): "
     testo_menu_lunghezza: .long .- testo_menu
 
     testo_selezione_non_valida: .ascii "Selezione non valida\n"
@@ -32,6 +32,14 @@
 
 .section .text
     .global _start
+
+.macro PRINT_NEW_LINE
+    movl $4, %eax
+    movl $1, %ebx
+    leal carattere_nuova_linea, %ecx
+    movl $1, %edx
+    int $0x80
+.endm
 
 _start:
     popl %esi
@@ -144,11 +152,7 @@ algoritmo_EDF:
     call programmazione
 
     # Stampo una nuova linea
-    movl $4, %eax
-    movl $1, %ebx
-    leal carattere_nuova_linea, %ecx
-    movl $1, %edx
-    int $0x80
+    PRINT_NEW_LINE
 
     jmp menu
 
@@ -167,13 +171,9 @@ algoritmo_HPF:
     # Passo il numero delgi elementi
     movb numero_elementi, %al
     call programmazione
-
+    
     # Stampo una nuova linea
-    movl $4, %eax
-    movl $1, %ebx
-    leal carattere_nuova_linea, %ecx
-    movl $1, %edx
-    int $0x80
+    PRINT_NEW_LINE
 
     jmp menu
 

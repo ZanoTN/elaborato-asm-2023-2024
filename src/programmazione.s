@@ -44,7 +44,7 @@ for:
     movl indice, %edx
 
     cmpl %edx, indice_massimo
-    je fine_for
+    jl fine_for
 
     # Stampa ID
     movl ID_attuale, %ebx
@@ -59,8 +59,7 @@ for:
     int $0x80	
 
     # Stampa Inizio		
-    movl durata_totale, %ebx
-    movl (%esp, %ebx), %eax
+    movl durata_totale, %eax
     call itoa
 
     # Stampa "\n"
@@ -88,8 +87,6 @@ for:
     cmpl $0, %ebx 
     jl aggiungi_penalita
 
-    # Incremto indice e etichetta
-    incl indice
     movl ID_attuale, %eax
     addl $16, %eax
     movl %eax, ID_attuale
@@ -108,7 +105,6 @@ aggiungi_penalita:
     movl %ebx, penalita_totale
 
     # Incremto indice e etichetta
-    incl indice
     movl ID_attuale, %eax
     addl $16, %eax
     movl %eax, ID_attuale

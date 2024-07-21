@@ -66,7 +66,7 @@ if_primo_fine:
     incl indice_secondo_livello
     addl $16, scandenza_attuale
     addl $16, scandenza_prossima
-    jmp for_primo_livello
+    jmp for_secondo_livello
 
 
 

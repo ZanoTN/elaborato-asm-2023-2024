@@ -66,7 +66,7 @@ if_primo_fine:
     incl indice_secondo_livello
     addl $16, priorita_attuale
     addl $16, priorita_prossima
-    jmp for_primo_livello
+    jmp for_secondo_livello
 
 
 

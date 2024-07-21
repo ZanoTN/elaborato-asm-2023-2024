@@ -19,6 +19,9 @@
     testo_algo_HPF: .ascii "Pianificazione HPF:\n"
     testo_algo_HPF_lunghezza: .long .- testo_algo_HPF
 
+    testo_terminazione_programma: .ascii "Terminazione programma\n"
+    testo_terminazione_programma_lunghezza: .long .- testo_terminazione_programma
+
     carattere_nuova_linea: .ascii "\n"
 
     carattere_selettore_algoritmo_EDF: .ascii "1"
@@ -112,7 +115,7 @@ menu:
     je algoritmo_HPF
 
     cmpb %cl, %dl
-    je esci
+    je termina_programma
 
     # Stampo il testo di errore
     movl $4, %eax
@@ -174,6 +177,15 @@ algoritmo_HPF:
 
     jmp menu
 
+
+termina_programma:
+    movl $4, %eax
+    movl $1, %ebx
+    leal testo_terminazione_programma, %ecx
+    movl testo_terminazione_programma_lunghezza, %edx
+    int $0x80
+
+    # jmp esci
 
 esci:
     # Esci dal programma con successo

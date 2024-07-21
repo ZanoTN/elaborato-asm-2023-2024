@@ -37,7 +37,6 @@ for_primo_livello:
 
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
-    # decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
 
 for_secondo_livello:
     incl indice_secondo_livello
@@ -77,7 +76,7 @@ check_priorita:
     movl (%esp, %ebx), %edx             # priorita piu in basso nella pila
 
     cmpl %ecx, %edx
-    jl scambia_valori
+    jg scambia_valori
 
     jmp if_primo_fine
 
@@ -134,4 +133,3 @@ fine_for_secondo_livello:
 fine_for_primo_livello:
     push %esi           # repusha indirizzo prox operazione nello stack
     ret
-

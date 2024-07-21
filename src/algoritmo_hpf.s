@@ -22,6 +22,9 @@ algoritmo_hpf:
     subb $1, %al            # Indice massimo e non la lunghezza massima
     movb %al, indice_massimo
 
+    movl $0, priorita_attuale
+    movl $16, priorita_prossima        # 0 + 16
+
     movl $-1, indice            # Settiamo l'indice
 
 
@@ -32,20 +35,15 @@ for_primo_livello:
     cmpl %eax, numero_righe
     je fine_for_primo_livello           # Controlliamo di non essere alla fine del primo for
 
-    
-    movl $20, priorita_prossima        # 4 + 16
-
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
-    #decl indice_secondo_livello                     # Potrebbe essere inutile, ma per ora lo teniamo
-
 
 for_secondo_livello:
     incl indice_secondo_livello
     movl indice_secondo_livello, %ebx
 
     cmpl %ebx, numero_righe
-    je for_primo_livello
+    je fine_for_secondo_livello
 
 if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
     movl priorita_attuale, %eax
@@ -55,7 +53,7 @@ if_primo:                      # Confrontiamo la scandenza attuale con quella su
     movl (%esp, %ebx), %edx         # valore scadenza prossima
 
     cmpl %ecx, %edx
-    jl scambia_valori
+    jg scambia_valori
 
     cmpl %ecx, %edx
     je check_scadenza
@@ -64,7 +62,6 @@ if_primo:                      # Confrontiamo la scandenza attuale con quella su
 
 
 if_primo_fine: 
-    addl $16, priorita_attuale
     addl $16, priorita_prossima
     jmp for_secondo_livello
 
@@ -72,15 +69,15 @@ if_primo_fine:
 
 check_scadenza: 
     movl priorita_attuale, %eax
-    subl $4, %eax                       # Vado a prendere la priorità 
+    addl $4, %eax                       # Vado a prendere la scandenza 
     movl priorita_prossima, %ebx
-    subl $4, %ebx
+    addl $4, %ebx
     movl (%esp, %eax), %ecx             # priorita piu in alto nella pila
     movl (%esp, %ebx), %edx             # priorita piu in basso nella pila
 
     cmpl %ecx, %edx
-    jg scambia_valori
-
+    jl scambia_valori
+    
     jmp if_primo_fine
 
 
@@ -117,11 +114,20 @@ scambia_valori:
     movl (%esp, %ebx), %edx
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
+    
+    addl $16, priorita_prossima
+
+    jmp for_secondo_livello
+
+
+fine_for_secondo_livello:
+    addl $16, priorita_attuale
+    movl priorita_attuale, %eax
+    addl $16, %eax
+    movl %eax, priorita_prossima
 
     jmp for_primo_livello
-
 
 fine_for_primo_livello:
     push %esi           # repusha indirizzo prox operazione nello stack
     ret
-

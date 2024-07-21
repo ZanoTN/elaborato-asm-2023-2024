@@ -13,6 +13,12 @@
     testo_selezione_non_valida: .ascii "Selezione non valida\n"
     testo_selezione_non_valida_lunghezza: .long .- testo_selezione_non_valida
 
+    testo_algo_EDF: .ascii "Pianificazione EDF:\n"
+    testo_algo_EDF_lunghezza: .long .- testo_algo_EDF
+
+    testo_algo_HPF: .ascii "Pianificazione HPF:\n"
+    testo_algo_HPF_lunghezza: .long .- testo_algo_HPF
+
     carattere_nuova_linea: .ascii "\n"
 
     carattere_selettore_algoritmo_EDF: .ascii "1"
@@ -50,7 +56,15 @@ _start:
 
     movl %eax, fd
     call read_file
-    movb %al, numero_elementi # TODO: Da verficare
+    movb %al, numero_elementi
+
+
+    # TODO: Chiudere il file
+
+    jmp menu
+
+
+
 
 errore:
     movl $4, %eax
@@ -83,9 +97,8 @@ menu:
     movl $3, %eax
     movl $0, %ebx
     leal input_utente, %ecx
-    movl $1, %edx
+    movl $2, %edx
     int $0x80
-
 
     movb carattere_selettore_algoritmo_EDF, %al
     movb carattere_selettore_algoritmo_HPF, %bl
@@ -111,8 +124,20 @@ menu:
     jmp menu
      
 algoritmo_EDF:
+    # Stampo il testo dell'algoritmo
+    movl $4, %eax
+    movl $1, %ebx
+    leal testo_algo_EDF, %ecx
+    movl testo_algo_EDF_lunghezza, %edx
+    int $0x80
+
+    # Passo il numero delgi elementi
+    movb numero_elementi, %al
     # Chiamo la funzione di ordinamento EDF
-    call algoritmo_EDF
+    call algoritmo_edf
+
+    # Passo il numero delgi elementi
+    movb numero_elementi, %al
     call programmazione
 
     # Stampo una nuova linea
@@ -125,8 +150,19 @@ algoritmo_EDF:
     jmp menu
 
 algoritmo_HPF:
-    # Chiamo la funzione di ordinamento HPF
-    call algoritmo_HPF
+    # Stampo il testo dell'algoritmo
+    movl $4, %eax
+    movl $1, %ebx
+    leal testo_algo_HPF, %ecx
+    movl testo_algo_HPF_lunghezza, %edx
+    int $0x80
+
+    # Passo il numero delgi elementi
+    movb numero_elementi, %al
+    call algoritmo_hpf
+
+    # Passo il numero delgi elementi
+    movb numero_elementi, %al
     call programmazione
 
     # Stampo una nuova linea
@@ -140,6 +176,7 @@ algoritmo_HPF:
 
 
 esci:
+    # Esci dal programma con successo
     movl $1, %eax
-    xorl %eax, %eax
+    movl $0, %ebx
     int $0x80

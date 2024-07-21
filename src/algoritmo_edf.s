@@ -12,7 +12,7 @@
     .type algoritmo_edf @function
 
 algoritmo_edf:
-    popl %esi # TODO: Da capire a cosa serve
+    popl %esi
 
     movb $4, %dl
     divb %dl
@@ -64,7 +64,7 @@ if_primo:                      # Confrontiamo la scandenza attuale con quella su
 
 if_primo_fine: 
     incl indice_secondo_livello
-    # addl $16, S                 # per puntare alla priorita prodotto successivo (piu in alto nello stack)
+    addl $16, scandenza_attuale
     addl $16, scandenza_prossima
     jmp for_primo_livello
 

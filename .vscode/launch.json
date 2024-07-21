@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "C/C++ Runner: Debug Session",
-      "type": "lldb",
+      "type": "gdb",
       "request": "launch",
       "args": [],
       "cwd": "/Users/riccardozanotelli/Repo/elabrotato-asm-2023-2024",

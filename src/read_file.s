@@ -81,7 +81,6 @@ check_value:
 
 
 check_value_max:
-    incl value_section
     cmpl $0, value_section
     je check_less_or_equal_max_ID
 
@@ -101,14 +100,14 @@ check_more_or_equal_one:
 
 
 check_less_or_equal_max_ID:
-    cmpl $127, value        # incrementa contatore della riga
-    incl value_section      # Vedere se è possibile metterla nel in "check_value"
+    incl value_section
+    cmpl $127, value
     jle add_value
     jmp errore
 
 check_less_or_equal_max_durata:
-    cmpl $10, value        # incrementa contatore della riga
-    incl value_section      # Vedere se è possibile metterla nel in "check_value"
+    incl value_section
+    cmpl $10, value
     jle add_value
     jmp errore
 

@@ -86,9 +86,7 @@ check_scadenza:
 
 scambia_valori: 
     movl priorita_attuale, %eax
-    subl $4, %eax
     movl priorita_prossima, %ebx
-    subl $4, %ebx
 
     # Scambia priorità
     movl (%esp, %eax), %ecx

@@ -22,6 +22,9 @@ algoritmo_edf:
     subb $1, %al            # Indice massimo e non la lunghezza massima
     movb %al, indice_massimo
 
+    movl $4, scandenza_attuale
+    movl $20, scandenza_prossima        # 4 + 16
+
     movl $-1, indice            # Settiamo l'indice
 
 
@@ -32,9 +35,6 @@ for_primo_livello:
     cmpl %eax, numero_righe
     je fine_for_primo_livello           # Controlliamo di non essere alla fine del primo for
 
-    movl $4, scandenza_attuale
-    movl $20, scandenza_prossima        # 4 + 16
-
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
     # decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
@@ -44,7 +44,7 @@ for_secondo_livello:
     movl indice_secondo_livello, %ebx
 
     cmpl %ebx, numero_righe
-    je for_primo_livello
+    je fine_for_secondo_livello
 
 if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
     movl scandenza_attuale, %eax
@@ -63,7 +63,7 @@ if_primo:                      # Confrontiamo la scandenza attuale con quella su
 
 
 if_primo_fine: 
-    addl $16, scandenza_attuale
+    # addl $16, scandenza_attuale
     addl $16, scandenza_prossima
     jmp for_secondo_livello
 
@@ -118,9 +118,20 @@ scambia_valori:
     movl (%esp, %ebx), %edx
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
+    
+    addl $16, scandenza_prossima
+
+    jmp for_secondo_livello
+
+
+fine_for_secondo_livello:
+    addl $16, scandenza_attuale
+
+    movl scandenza_attuale, %eax
+    subl $16, %eax
+    movl %eax, scandenza_attuale
 
     jmp for_primo_livello
-
 
 fine_for_primo_livello:
     push %esi           # repusha indirizzo prox operazione nello stack

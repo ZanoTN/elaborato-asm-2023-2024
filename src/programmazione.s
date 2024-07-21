@@ -18,7 +18,7 @@
 
 .section .text
     .global programmazione
-    .type programmazione @function
+    .type programmazione, @function
 
 programmazione:
     popl %esi
@@ -28,16 +28,16 @@ programmazione:
     movb %al, numero_righe
 
     # Inizializziamo gli indici
-    subb $1, %al            # Indice massimo e non la lunghezza massima
+    subb $1, %al                                # Indice massimo e non la lunghezza massima
     movb %al, indice_massimo
 
     xorl %ecx, %ecx
-    movl %ecx, durata_totale        # Azzeriamo la durata totale
-    movl %ecx, penalita_totale      # Azzeriamo la penalità totale
+    movl %ecx, durata_totale                    # Azzeriamo la durata totale
+    movl %ecx, penalita_totale                  # Azzeriamo la penalità totale
 
     movl $12, ID_attuale
 
-    movl $-1, indice            # Settiamo l'indice
+    movl $-1, indice                            # Settiamo l'indice
 
 for:
     incl indice

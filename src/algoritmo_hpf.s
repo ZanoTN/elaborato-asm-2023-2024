@@ -1,6 +1,5 @@
 .section .data  
     numero_righe: .int 0
-    indice_massimo: .int 0
     indice: .int 0
     indice_secondo_livello: .int 0
 
@@ -9,7 +8,7 @@
 
 .section .text
     .global algoritmo_hpf
-    .type algoritmo_hpf @function
+    .type algoritmo_hpf, @function
 
 algoritmo_hpf:
     popl %esi
@@ -18,14 +17,10 @@ algoritmo_hpf:
     divb %dl
     movb %al, numero_righe
 
-    # Inizializziamo gli indici
-    subb $1, %al            # Indice massimo e non la lunghezza massima
-    movb %al, indice_massimo
-
     movl $0, priorita_attuale
-    movl $16, priorita_prossima        # 0 + 16
+    movl $16, priorita_prossima                 # 0 + 16
 
-    movl $-1, indice            # Settiamo l'indice
+    movl $-1, indice                            # Settiamo l'indice
 
 
 for_primo_livello:
@@ -33,7 +28,7 @@ for_primo_livello:
     movl indice, %eax
 
     cmpl %eax, numero_righe
-    je fine_for_primo_livello           # Controlliamo di non essere alla fine del primo for
+    je fine_for_primo_livello                   # Controlliamo di non essere alla fine del primo for
 
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
@@ -45,12 +40,12 @@ for_secondo_livello:
     cmpl %ebx, numero_righe
     je fine_for_secondo_livello
 
-if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
+if_primo:                                       # Confrontiamo la scandenza attuale con quella successiva 
     movl priorita_attuale, %eax
     movl priorita_prossima, %ebx
 
-    movl (%esp, %eax), %ecx         # valore scadenza attuale
-    movl (%esp, %ebx), %edx         # valore scadenza prossima
+    movl (%esp, %eax), %ecx                     # valore scadenza attuale
+    movl (%esp, %ebx), %edx                     # valore scadenza prossima
 
     cmpl %ecx, %edx
     jg scambia_valori
@@ -69,11 +64,11 @@ if_primo_fine:
 
 check_scadenza: 
     movl priorita_attuale, %eax
-    addl $4, %eax                       # Vado a prendere la scandenza 
+    addl $4, %eax                               # Vado a prendere la scandenza 
     movl priorita_prossima, %ebx
     addl $4, %ebx
-    movl (%esp, %eax), %ecx             # priorita piu in alto nella pila
-    movl (%esp, %ebx), %edx             # priorita piu in basso nella pila
+    movl (%esp, %eax), %ecx
+    movl (%esp, %ebx), %edx
 
     cmpl %ecx, %edx
     jl scambia_valori
@@ -129,5 +124,5 @@ fine_for_secondo_livello:
     jmp for_primo_livello
 
 fine_for_primo_livello:
-    push %esi           # repusha indirizzo prox operazione nello stack
+    push %esi                                   # repusha indirizzo prox operazione nello stack
     ret

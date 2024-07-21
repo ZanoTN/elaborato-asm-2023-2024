@@ -1,7 +1,7 @@
 .section .data
 
-    fd: .int 0      # File descriptor
-    argc: .int 0      # per salvare il numero di argomenti
+    fd: .int 0                              # File descriptor
+    argc: .int 0                            # per salvare il numero di argomenti
     numero_elementi: .int 0
     
     testo_errore: .ascii "Ops! Qualcosa non ha funzionato\n\n"
@@ -46,13 +46,13 @@ _start:
 
     movl %esi, argc
 
-    cmpb $2, argc           # Controllo se ci sono due argomenti nel argv ("main", "[nome file]")
+    cmpb $2, argc                           # Controllo se ci sono due argomenti nel argv ([nome programma], "[nome file]")
     jne errore
 
-    popl %esi               # Togliamo il primo elemento, cioè il nome del programma ("main")
+    popl %esi                               # Togliamo il primo elemento, cioè il nome del programma ([nome programma])
 
     popl %esi
-    testl %esi, %esi	    # controlla se ESI e' 0 (NULL)
+    testl %esi, %esi	                    # controlla se ESI e' 0 (NULL)
     jz errore
 
     # Apriamo il file

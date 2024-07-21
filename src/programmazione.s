@@ -95,13 +95,13 @@ for:
 aggiungi_penalita:
     movl ID_attuale, %ecx
     subl $12, %ecx
-    movl (%esi, %ecx), %eax # Prioritàs 
+    movl (%esp, %ecx), %eax # Priorità
 
     mull %ebx # %eax * %ebx = %eax
 
     # Aggiorno il totale del della penalità
     movl penalita_totale, %ebx
-    addl %eax, %ebx
+    subl %eax, %ebx
     movl %ebx, penalita_totale
 
     # Incremto indice e etichetta

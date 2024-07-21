@@ -3,80 +3,98 @@
     indice_massimo: .int 0
     indice: .int 0
     indice_secondo_livello: .int 0
+
     scandenza_attuale: .int 0
     scandenza_prossima: .int 0
-    
+
 .section .text
     .global algoritmo_edf
-    .type algoritmo_edf, @function
+    .type algoritmo_edf @function
 
 algoritmo_edf:
-    popl %esi  # salva l'indirizzo di ritorno da call in %esi
+    popl %esi
 
-    # Calcola il numero di righe
     movb $4, %dl
     divb %dl
     movb %al, numero_righe
 
-    # Inizializza gli indici
-    subb $1, %al
+    # Inizializziamo gli indici
+    subb $1, %al            # Indice massimo e non la lunghezza massima
     movb %al, indice_massimo
 
     movl $4, scandenza_attuale
-    movl $20, scandenza_prossima  # 4 + 16
+    movl $20, scandenza_prossima        # 4 + 16
 
-    movl $-1, indice
+    movl $-1, indice            # Settiamo l'indice
+
 
 for_primo_livello:
     incl indice
     movl indice, %eax
-    cmpl numero_righe, %eax
-    je fine_for_primo_livello
+
+    cmpl %eax, numero_righe
+    je fine_for_primo_livello           # Controlliamo di non essere alla fine del primo for
 
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
+    # decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
 
 for_secondo_livello:
     incl indice_secondo_livello
     movl indice_secondo_livello, %ebx
-    cmpl numero_righe, %ebx
+
+    cmpl %ebx, numero_righe
     je fine_for_secondo_livello
 
-    # Confronto delle scadenze
+if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
     movl scandenza_attuale, %eax
     movl scandenza_prossima, %ebx
-    movl (%esp, %eax), %ecx  # scadenza attuale
-    movl (%esp, %ebx), %edx  # scadenza prossima
+
+    movl (%esp, %eax), %ecx         # valore scadenza attuale
+    movl (%esp, %ebx), %edx         # valore scadenza prossima
+
     cmpl %ecx, %edx
-    jg scambia_valori
+    jl scambia_valori
+
+    cmpl %ecx, %edx
     je check_priorita
 
     jmp if_primo_fine
 
-check_priorita:
+
+if_primo_fine: 
+    addl $16, scandenza_prossima
+    jmp for_secondo_livello
+
+
+
+check_priorita: 
     movl scandenza_attuale, %eax
-    subl $4, %eax
+    subl $4, %eax                       # Vado a prendere la priorità 
     movl scandenza_prossima, %ebx
     subl $4, %ebx
-    movl (%esp, %eax), %ecx  # priorità attuale
-    movl (%esp, %ebx), %edx  # priorità prossima
+    movl (%esp, %eax), %ecx             # priorita piu in alto nella pila
+    movl (%esp, %ebx), %edx             # priorita piu in basso nella pila
+
     cmpl %ecx, %edx
     jl scambia_valori
 
     jmp if_primo_fine
 
-scambia_valori:
-    # Scambio delle priorità
+
+scambia_valori: 
     movl scandenza_attuale, %eax
     subl $4, %eax
     movl scandenza_prossima, %ebx
     subl $4, %ebx
+
+    # Scambia priorità
     movl (%esp, %eax), %ecx
     movl (%esp, %ebx), %edx
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
 
-    # Scambio delle scadenze
+    # Scambia scadenza
     addl $4, %eax
     addl $4, %ebx
     movl (%esp, %eax), %ecx
@@ -84,15 +102,7 @@ scambia_valori:
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
 
-    # Scambio delle durate
-    addl $4, %eax
-    addl $4, %ebx
-    movl (%esp, %eax), %ecx
-    movl (%esp, %ebx), %edx
-    movl %edx, (%esp, %eax)
-    movl %ecx, (%ebx, %eax)
-
-    # Scambio degli ID
+    # Scambia durata
     addl $4, %eax
     addl $4, %ebx
     movl (%esp, %eax), %ecx
@@ -100,21 +110,28 @@ scambia_valori:
     movl %edx, (%esp, %eax)
     movl %ecx, (%esp, %ebx)
 
+    # Scambia ID
+    addl $4, %eax
+    addl $4, %ebx
+    movl (%esp, %eax), %ecx
+    movl (%esp, %ebx), %edx
+    movl %edx, (%esp, %eax)
+    movl %ecx, (%esp, %ebx)
+    
     addl $16, scandenza_prossima
+
     jmp for_secondo_livello
 
-if_primo_fine:
-    addl $16, scandenza_attuale
-    jmp for_secondo_livello
 
 fine_for_secondo_livello:
     addl $16, scandenza_attuale
     movl scandenza_attuale, %eax
-    subl $16, %eax
-    movl %eax, scandenza_attuale
+    addl $16, %eax
+    movl %eax, scandenza_prossima
 
     jmp for_primo_livello
 
 fine_for_primo_livello:
-    push %esi  # re-push l'indirizzo di ritorno nello stack
+    push %esi           # repusha indirizzo prox operazione nello stack
     ret
+

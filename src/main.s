@@ -87,10 +87,9 @@ errore:
     leal testo_errore, %ecx
     movl testo_errore_lunghezza, %edx
     int $0x80
-    jmp pre_scarica_pila
-
-pre_scarica_pila:
     movl numero_elementi, %eax
+    jmp scarica_pila
+
 scarica_pila:    
     cmpl $0, %eax
     je esci

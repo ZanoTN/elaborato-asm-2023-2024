@@ -90,7 +90,7 @@ errore:
     movl numero_elementi, %eax
     jmp scarica_pila
 
-scarica_pila:    
+scarica_pila:
     cmpl $0, %eax
     je esci
     popl %ebx

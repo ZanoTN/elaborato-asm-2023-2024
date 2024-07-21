@@ -1,1 +1,9 @@
-make && ./bin/pianificatore ./ordini/ordini_1.txt
+# Elaborato ASM 2024
+
+## Compilazione
+
+```make```
+
+## Esecuzione
+
+```.bin/pianificatore [path_to_file]```

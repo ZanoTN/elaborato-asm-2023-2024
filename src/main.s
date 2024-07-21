@@ -69,7 +69,7 @@ _start:
     call read_file
 
     cmpl $500, %eax
-    jg errore
+    je errore
 
     movb %al, numero_elementi
 

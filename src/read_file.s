@@ -13,6 +13,8 @@
     
     EOR: .int 1
 
+    status: .int 200
+
 .section .text
     .global read_file
     .type read_file @function
@@ -131,7 +133,7 @@ add_value:
     incl numero_elementi          # incrementa il numero di elementi inseriti nello stack
     
     cmpl $0, EOR            # check se sono a fine file 
-    je end_read              # TODO: Da creare
+    je end_read             
 
     jmp read_loop            # altrimenti ritorna al ciclo di lettura 
 
@@ -147,11 +149,17 @@ end_read:
 
 
 errore: 
+
+    # Stampo il messaggio di errore
     movl $4, %eax                       # syscall write
     movl $2, %ebx                       # file descriptor (stderr)
     leal testo_errore, %ecx             # messaggio di errore
     movl testo_errore_lunghezza, %edx   # lunghezza messaggio
     int $0x80                           # interruzione del kernel
 
-    # TODO: implementare un controllo che faccia chiudere il file dal main, tipo una variabile di controllo
-esci: ret
+    movl $1, %eax                       # custom return value to indicate an error
+    movl $500, status
+    
+esci:  
+    movl status, %eax
+    ret

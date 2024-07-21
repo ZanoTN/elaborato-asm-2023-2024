@@ -67,14 +67,18 @@ _start:
 
     movl %eax, fd
     call read_file
+
+    cmpl $500, %eax
+    jg errore
+
     movb %al, numero_elementi
 
-
-    # TODO: Chiudere il file
+    # CLose the file
+    movl $6, %eax
+    movl fd, %ebx
+    int $0x80
 
     jmp menu
-
-
 
 
 errore:

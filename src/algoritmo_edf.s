@@ -29,7 +29,7 @@ for_primo_livello:
     incl indice
     movl indice, %eax
 
-    cmpl %eax, indice_massimo
+    cmpl %eax, numero_righe
     je fine_for_primo_livello           # Controlliamo di non essere alla fine del primo for
 
     movl $4, scandenza_attuale
@@ -37,13 +37,13 @@ for_primo_livello:
 
     movl indice, %ebx
     movl %ebx, indice_secondo_livello
-    decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
+    # decl indice_secondo_livello                 # Potrebbe essere inutile, ma per ora lo teniamo
 
 for_secondo_livello:
     incl indice_secondo_livello
     movl indice_secondo_livello, %ebx
 
-    cmpl %ebx, indice_massimo
+    cmpl %ebx, numero_righe
     je for_primo_livello
 
 if_primo:                      # Confrontiamo la scandenza attuale con quella successiva 
@@ -63,7 +63,6 @@ if_primo:                      # Confrontiamo la scandenza attuale con quella su
 
 
 if_primo_fine: 
-    incl indice_secondo_livello
     addl $16, scandenza_attuale
     addl $16, scandenza_prossima
     jmp for_secondo_livello

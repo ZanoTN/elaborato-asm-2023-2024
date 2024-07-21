@@ -43,8 +43,8 @@ for:
     incl indice
     movl indice, %edx
 
-    cmpl %edx, indice_massimo
-    jl fine_for
+    cmpl %edx, numero_righe
+    je fine_for
 
     # Stampa ID
     movl ID_attuale, %ebx
@@ -74,7 +74,7 @@ for:
     subl $4, %eax
     movl (%esp, %eax), %ebx
     movl durata_totale, %eax
-    subl %eax, %ebx
+    addl %eax, %ebx
     movl %ebx, durata_totale 
 
     # Calcolo penalità
